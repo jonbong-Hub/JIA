@@ -137,7 +137,71 @@
       }
     }
 
-    // Existing functions for purchases (unchanged)...
+    // --- Upgrade Purchase Functions ---
+
+    function buyKissGiver() {
+      if (hugs >= 10) {
+        hugs -= 10;
+        kissGivers++;
+        updateDisplay();
+      }
+    }
+
+    function buyLoveLetter() {
+      if (hugs >= 50) {
+        hugs -= 50;
+        loveLetters++;
+        updateDisplay();
+      }
+    }
+
+    function buyAffectionFactory() {
+      if (hugs >= 200) {
+        hugs -= 200;
+        factories++;
+        updateDisplay();
+      }
+    }
+
+    function buyCharmBomb() {
+      if (hugs >= 500) {
+        hugs -= 500;
+        charmBombs++;
+        updateDisplay();
+      }
+    }
+
+    function buyCuddleCoin() {
+      if (hugs >= 2000) {
+        hugs -= 2000;
+        cuddleCoins++;
+        updateDisplay();
+      }
+    }
+
+    function buyCharmConsultant() {
+      if (cuddleCoins >= 1) {
+        cuddleCoins--;
+        consultants++;
+        updateDisplay();
+      }
+    }
+
+    function buyHugShipping() {
+      if (cuddleCoins >= 5) {
+        cuddleCoins -= 5;
+        shipping++;
+        updateDisplay();
+      }
+    }
+
+    function buyAffectionAI() {
+      if (cuddleCoins >= 10) {
+        cuddleCoins -= 10;
+        aiUnits++;
+        updateDisplay();
+      }
+    }
 
     function checkUnlocks() {
       if (hugs >= 200) {
