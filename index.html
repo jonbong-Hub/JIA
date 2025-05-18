@@ -70,7 +70,41 @@
   <button onclick="giveHug()" title="Click like your life's a romcom!">Give a Sassy Hug 🤗✨</button>
   <div id="winMessage" class="hidden">🎉 You reached 10,000,000,000 hugs! The Jonpocalypse of love is complete. 💞 🎉</div>
 
-  <!-- Upgrade buttons omitted here for brevity, unchanged from before -->
+  <h2>💅 Upgrades with Attitude 💅</h2>
+<div id="tier1">
+  <button onclick="buyKissGiver()" title="Automated smooches, 100% Jon certified">Hire Kiss Giver 💋 (10 Hugs)</button>
+  <p>Kiss Givers: <span id="kissGivers">0</span></p>
+
+  <button onclick="buyLoveLetter()" title="Sealed with sass and glitter">Send Flirty Love Letter 💌 (50 Hugs)</button>
+  <p>Love Letters: <span id="loveLetters">0</span></p>
+</div>
+
+<div id="factorySection" class="hidden">
+  <h2>💼 Hug Industry 💼</h2>
+  <button onclick="buyAffectionFactory()" title="The hug mill never sleeps">Open Affection Factory 🏭 (200 Hugs)</button>
+  <p>Affection Factories: <span id="factories">0</span></p>
+
+  <button onclick="buyCharmBomb()" title="BOOM! You're fabulous now">Drop a Charm Bomb 💣✨ (500 Hugs)</button>
+  <p>Charm Bombs: <span id="charmBombs">0</span></p>
+</div>
+
+<div id="economySection" class="hidden">
+  <h2>💰 Emotional Economy 💰</h2>
+  <button onclick="buyCuddleCoin()" title="Cuddle-backed currency. Federal Hugserve approved">Mint Cuddle Coin 🪙 (2000 Hugs)</button>
+  <p>Cuddle Coin Count: <span id="cuddleCoins">0</span></p>
+
+  <button onclick="buyCharmConsultant()" title="Now offering strategic charm deployment">Hire Charm Consultant 👔✨ (1 Cuddle Coin)</button>
+  <p>Charm Consultants: <span id="consultants">0</span></p>
+</div>
+
+<div id="globalSection" class="hidden">
+  <h2>🌍 Global Jonfluence 🌍</h2>
+  <button onclick="buyHugShipping()" title="Worldwide snuggle distribution">Start Hug Shipping 🌎 (5 Cuddle Coins)</button>
+  <p>Hug Shipping Networks: <span id="shipping">0</span></p>
+
+  <button onclick="buyAffectionAI()" title="The AI uprising... but softer">Launch Affection AI 🤖💖 (10 Cuddle Coins)</button>
+  <p>Affection AIs: <span id="aiUnits">0</span></p>
+</div>
 
   <script>
     let hugs = 0;
