@@ -35,7 +35,9 @@
       100% { transform: scale(1); }
     }
     .hidden {
-      display: none;
+      opacity: 0 !important;
+      transform: translateX(100%) !important;
+      pointer-events: none;
     }
     #winMessage {
       font-size: 28px;
@@ -50,6 +52,27 @@
     height: 100%;
     pointer-events: none;
     z-index: 9999;
+  }
+  #statsPanel {
+    transition: all 0.5s ease;
+    opacity: 1;
+    transform: translateX(0);
+    position: fixed;
+    right: 20px;
+    top: 100px;
+    background: #fff0ff;
+    border: 2px solid #cc99ff;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    width: 220px;
+    text-align: left;
+    z-index: 100;
+  }
+  #hugsChart {
+    width: 100%;
+    height: 150px;
+    margin-top: 10px;
   }
 </style>
 </head>
@@ -68,18 +91,31 @@
   <p>Total Hugs: <span id="hugCount">0</span></p>
   <p>Total Cuddle Coins: <span id="cuddleCoin">0</span></p>
   <button onclick="giveHug()" title="Click like your life's a romcom!">Give a Sassy Hug 🤗✨</button>
-  <div id="winMessage" class="hidden">🎉 You reached 10,000,000,000 hugs! The Jonpocalypse of love is complete. 💞 🎉</div>
+  <button onclick="toggleStats()">📊 Toggle Stats</button>
+<div id="statsPanel">
+  <canvas id="hugsChart"></canvas>
+  <strong>📊 Production Rates:</strong>
+  <p>Hug Givers: 1 hug every 5s</p>
+  <p>Love Letters: 5 hugs/sec</p>
+  <p>Factories: 20 hugs/sec</p>
+  <p>Charm Bombs: 50 hugs/sec</p>
+  <p>Consultants: 15 hugs/sec</p>
+  <p>Shipping: 100 hugs/sec</p>
+  <p>Affection AI: +1% total hugs/sec</p>
+<p><strong>Hugs per Second:</strong> <span id="hps">0</span></p>
+</div>
+<div id="winMessage" class="hidden" style="transition: all 0.5s ease; opacity: 1; transform: translateY(0);">🎉 You reached 10,000,000,000 hugs! The Jonpocalypse of love is complete. 💞 🎉</div>
 
   <h2>💅 Upgrades with Attitude 💅</h2>
 <div id="tier1">
   <button onclick="buyKissGiver()" title="Automated smooches, 100% Jon certified">Hire Hug Giver 🤝 (10 Hugs)</button>
-  <p>Hug Givers: <span id="kissGivers">0</span></p>
+  <p>Hug Givers: <span id="hugGivers">0</span></p>
 
   <button onclick="buyLoveLetter()" title="Sealed with sass and glitter">Send Flirty Love Letter 💌 (50 Hugs)</button>
   <p>Love Letters: <span id="loveLetters">0</span></p>
 </div>
 
-<div id="factorySection" class="hidden">
+<div id="factorySection" class="hidden" style="transition: all 0.5s ease; opacity: 1; transform: translateX(0);">
   <h2>💼 Hug Industry 💼</h2>
   <button onclick="buyAffectionFactory()" title="The hug mill never sleeps">Open Affection Factory 🏭 (200 Hugs)</button>
   <p>Affection Factories: <span id="factories">0</span></p>
@@ -88,7 +124,7 @@
   <p>Charm Bombs: <span id="charmBombs">0</span></p>
 </div>
 
-<div id="economySection" class="hidden">
+<div id="economySection" class="hidden" style="transition: all 0.5s ease; opacity: 1; transform: translateX(0);">
   <h2>💰 Emotional Economy 💰</h2>
   <button onclick="buyCuddleCoin()" title="Cuddle-backed currency. Federal Hugserve approved">Mint Cuddle Coin 🪙 (2000 Hugs)</button>
   <p>Cuddle Coin Count: <span id="cuddleCoins">0</span></p>
@@ -97,7 +133,7 @@
   <p>Charm Consultants: <span id="consultants">0</span></p>
 </div>
 
-<div id="globalSection" class="hidden">
+<div id="globalSection" class="hidden" style="transition: all 0.5s ease; opacity: 1; transform: translateX(0);">
   <h2>🌍 Global Jonfluence 🌍</h2>
   <button onclick="buyHugShipping()" title="Worldwide snuggle distribution">Start Hug Shipping 🌎 (5 Cuddle Coins)</button>
   <p>Hug Shipping Networks: <span id="shipping">0</span></p>
@@ -133,6 +169,7 @@
     function checkWinCondition() {
       if (hugs >= winThreshold) {
         document.getElementById("winMessage").classList.remove("hidden");
+        playUnlockSound();
         launchCelebration();
       }
     }
@@ -208,12 +245,15 @@
     function checkUnlocks() {
       if (hugs >= 200) {
         document.getElementById("factorySection").classList.remove("hidden");
+        playUnlockSound();
       }
       if (hugs >= 2000 || cuddleCoins > 0) {
         document.getElementById("economySection").classList.remove("hidden");
+        playUnlockSound();
       }
       if (cuddleCoins >= 5 || shipping > 0 || aiUnits > 0) {
         document.getElementById("globalSection").classList.remove("hidden");
+        playUnlockSound();
       }
     }
 
@@ -231,13 +271,78 @@
     }
 
     setInterval(() => {
-      hugs += kissGivers + (loveLetters * 5) + (factories * 20) + (charmBombs * 50) + (consultants * 15) + (shipping * 100);
-      if (aiUnits > 0) hugs += Math.floor(hugs * 0.01 * aiUnits);
-      checkUnlocks();
-      updateDisplay();
-      checkWinCondition();
-    }, 1000);
-  </script>
+  const hugsFromHugGivers = kissGivers / 5;
+  const hugsFromLoveLetters = loveLetters * 5;
+  const hugsFromFactories = factories * 20;
+  const hugsFromBombs = charmBombs * 50;
+  const hugsFromConsultants = consultants * 15;
+  const hugsFromShipping = shipping * 100;
+  const hugsFromAI = aiUnits > 0 ? Math.floor(hugs * 0.01 * aiUnits) : 0;
+
+  const totalHPS = hugsFromHugGivers + hugsFromLoveLetters + hugsFromFactories + hugsFromBombs + hugsFromConsultants + hugsFromShipping + hugsFromAI;
+
+  hugs += totalHPS;
+  checkUnlocks();
+  updateDisplay();
+  checkWinCondition();
+  document.getElementById("hps").textContent = totalHPS.toFixed(1);
+}, 1000);
+  function toggleStats() {
+  const panel = document.getElementById("statsPanel");
+  panel.classList.toggle("hidden");
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('hugsChart').getContext('2d');
+  const hugData = {
+    labels: [],
+    datasets: [{
+      label: 'Total Hugs Over Time',
+      data: [],
+      borderColor: '#d1009e',
+      backgroundColor: 'rgba(209, 0, 158, 0.2)',
+      tension: 0.2
+    }]
+  };
+
+  const hugChart = new Chart(ctx, {
+    type: 'line',
+    data: hugData,
+    options: {
+      responsive: true,
+      animation: false,
+      scales: {
+        x: {
+          display: false
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              if (value === 0) return '0';
+              const exponent = Math.floor(Math.log10(value));
+              const power = Math.pow(10, exponent);
+              return value === power ? value.toLocaleString() : '';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  let timeElapsed = 0;
+  setInterval(() => {
+    timeElapsed++;
+    hugData.labels.push("");
+    hugData.datasets[0].data.push(hugs);
+    if (hugData.labels.length > 30) {
+      hugData.labels.shift();
+      hugData.datasets[0].data.shift();
+    }
+    hugChart.update();
+  }, 1000);
+</script>
 <canvas id="confettiCanvas"></canvas>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 <script>
@@ -268,6 +373,17 @@
       }));
     }, 250);
   }
+</script>
+<audio id="unlockSound">
+  <source src="https://cdn.pixabay.com/audio/2022/07/18/audio_26b5692f59.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+function playUnlockSound() {
+  const sound = document.getElementById("unlockSound");
+  if (sound) sound.play();
+}
 </script>
 </body>
 </html>
