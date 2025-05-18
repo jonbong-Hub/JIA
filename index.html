@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jon's Infinite Affection</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      background: linear-gradient(to right, #ffe6f0, #e0ccff);
+      color: #4b006e;
+      padding-top: 50px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      margin: 10px;
+      background-color: #ffd6ff;
+      border: 2px solid #cc99ff;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.1s ease, background-color 0.3s;
+    }
+    button:hover {
+      background-color: #ffe6ff;
+      transform: scale(1.05);
+    }
+    #heart {
+      font-size: 50px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .hidden {
+      display: none;
+    }
+    #winMessage {
+      font-size: 28px;
+      color: #d1009e;
+      margin-top: 20px;
+    }
+    #confettiCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+  }
+</style>
+</head>
+<body>
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_1f5fc1f798.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <audio id="clickSound">
+    <source src="https://cdn.pixabay.com/audio/2022/03/01/audio_56ca89b0c3.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="heart" title="Your heart beats for hugs">💗</div>
+  <h1 title="Because love never quits">Jon's Infinite Affection</h1>
+  <p>Total Hugs: <span id="hugCount">0</span></p>
+  <p>Total Cuddle Coins: <span id="cuddleCoin">0</span></p>
+  <button onclick="giveHug()" title="Click like your life's a romcom!">Give a Sassy Hug 🤗✨</button>
+  <div id="winMessage" class="hidden">🎉 You reached 10,000,000,000 hugs! The Jonpocalypse of love is complete. 💞 🎉</div>
+
+  <!-- Upgrade buttons omitted here for brevity, unchanged from before -->
+
+  <script>
+    let hugs = 0;
+    let cuddleCoins = 0;
+    let kissGivers = 0;
+    let loveLetters = 0;
+    let factories = 0;
+    let charmBombs = 0;
+    let consultants = 0;
+    let shipping = 0;
+    let aiUnits = 0;
+    const winThreshold = 10000000000;
+
+    function playClickSound() {
+      document.getElementById("clickSound").play();
+    }
+
+    function giveHug() {
+      hugs++;
+      playClickSound();
+      checkUnlocks();
+      updateDisplay();
+      checkWinCondition();
+    }
+
+    function checkWinCondition() {
+      if (hugs >= winThreshold) {
+        document.getElementById("winMessage").classList.remove("hidden");
+        launchCelebration();
+      }
+    }
+
+    // Existing functions for purchases (unchanged)...
+
+    function checkUnlocks() {
+      if (hugs >= 200) {
+        document.getElementById("factorySection").classList.remove("hidden");
+      }
+      if (hugs >= 2000 || cuddleCoins > 0) {
+        document.getElementById("economySection").classList.remove("hidden");
+      }
+      if (cuddleCoins >= 5 || shipping > 0 || aiUnits > 0) {
+        document.getElementById("globalSection").classList.remove("hidden");
+      }
+    }
+
+    function updateDisplay() {
+      document.getElementById("hugCount").textContent = hugs;
+      document.getElementById("cuddleCoin").textContent = cuddleCoins;
+      document.getElementById("kissGivers").textContent = kissGivers;
+      document.getElementById("loveLetters").textContent = loveLetters;
+      document.getElementById("factories").textContent = factories;
+      document.getElementById("charmBombs").textContent = charmBombs;
+      document.getElementById("cuddleCoins").textContent = cuddleCoins;
+      document.getElementById("consultants").textContent = consultants;
+      document.getElementById("shipping").textContent = shipping;
+      document.getElementById("aiUnits").textContent = aiUnits;
+    }
+
+    setInterval(() => {
+      hugs += kissGivers + (loveLetters * 5) + (factories * 20) + (charmBombs * 50) + (consultants * 15) + (shipping * 100);
+      if (aiUnits > 0) hugs += Math.floor(hugs * 0.01 * aiUnits);
+      checkUnlocks();
+      updateDisplay();
+      checkWinCondition();
+    }, 1000);
+  </script>
+<canvas id="confettiCanvas"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<script>
+  function launchCelebration() {
+    const duration = 5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti(Object.assign({}, defaults, {
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+      }));
+      confetti(Object.assign({}, defaults, {
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+      }));
+    }, 250);
+  }
+</script>
+</body>
+</html>
