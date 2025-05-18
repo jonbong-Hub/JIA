@@ -88,8 +88,8 @@
 
   <div id="heart" title="Your heart beats for hugs">💗</div>
   <h1 title="Because love never quits">Jon's Infinite Affection</h1>
-  <p>Total Hugs: <span id="hugCount">0</span></p>
-  <p>Total Cuddle Coins: <span id="cuddleCoin">0</span></p>
+  <p>Total Hugs: <span id="hugCount">0</span><br><small id="hugLabel"></small></p>
+  <p>Total Cuddle Coins: <span id="cuddleCoin">0</span><br><small id="coinLabel"></small></p>
   <button onclick="giveHug()" title="Click like your life's a romcom!">Give a Sassy Hug 🤗✨</button>
   <button onclick="toggleStats()">📊 Toggle Stats</button>
 <div id="statsPanel">
@@ -108,7 +108,7 @@
 
   <h2>💅 Upgrades with Attitude 💅</h2>
 <div id="tier1">
-  <button onclick="buyKissGiver()" title="Automated smooches, 100% Jon certified">Hire Hug Giver 🤝 (10 Hugs)</button>
+  <button onclick="buyHugGiver()" title="Automated smooches, 100% Jon certified">Hire Hug Giver 🤝 (10 Hugs)</button>
   <p>Hug Givers: <span id="hugGivers">0</span></p>
 
   <button onclick="buyLoveLetter()" title="Sealed with sass and glitter">Send Flirty Love Letter 💌 (50 Hugs)</button>
@@ -145,7 +145,7 @@
   <script>
     let hugs = 0;
     let cuddleCoins = 0;
-    let kissGivers = 0;
+    let hugGivers = 0;
     let loveLetters = 0;
     let factories = 0;
     let charmBombs = 0;
@@ -176,12 +176,12 @@
 
     // --- Upgrade Purchase Functions ---
 
-    function buyKissGiver() {
+    function buyHugGiver() {
       console.log("Attempting to hire Hug Giver with", hugs, "hugs");
       if (hugs >= 10) {
         hugs -= 10;
-        kissGivers++;
-        console.log("Success: You now have", kissGivers, "Hug Givers");
+        hugGivers++;
+        console.log("Success: You now have", hugGivers, "Hug Givers");
         updateDisplay();
       }
     }
@@ -195,7 +195,10 @@
     }
 
     function buyAffectionFactory() {
-      if (hugs >= 200) {
+      if (hugs >= 500) {
+        document.getElementById("factorySection").classList.remove("hidden");
+        playUnlockSound();
+      } else if (hugs >= 200) {
         hugs -= 200;
         factories++;
         updateDisplay();
@@ -258,10 +261,25 @@
     }
 
     function updateDisplay() {
-      document.getElementById("hugCount").textContent = hugs;
-      document.getElementById("cuddleCoin").textContent = cuddleCoins;
-      document.getElementById("kissGivers").textContent = kissGivers;
+      function formatAbbreviated(value) {
+        if (value >= 1e9) return (value / 1e9).toFixed(2) + 'B';
+        if (value >= 1e6) return (value / 1e6).toFixed(2) + 'M';
+        if (value >= 1e3) return (value / 1e3).toFixed(2) + 'K';
+        return value.toString();
+      }
+
+      function labelLargeNumber(value) {
+        if (value >= 1e9) return (value / 1e9).toFixed(2) + ' Billion';
+        if (value >= 1e6) return (value / 1e6).toFixed(2) + ' Million';
+        if (value >= 1e3) return (value / 1e3).toFixed(2) + ' Thousand';
+        return '';
+      }
+      document.getElementById("hugCount").textContent = hugs.toLocaleString();
+      document.getElementById("cuddleCoin").textContent = cuddleCoins.toLocaleString();
+      document.getElementById("hugGivers").textContent = hugGivers;
+      document.getElementById("hugLabel").textContent = labelLargeNumber(hugs) + ' (' + formatAbbreviated(hugs) + ')';
       document.getElementById("loveLetters").textContent = loveLetters;
+      document.getElementById("coinLabel").textContent = labelLargeNumber(cuddleCoins) + ' (' + formatAbbreviated(cuddleCoins) + ')';
       document.getElementById("factories").textContent = factories;
       document.getElementById("charmBombs").textContent = charmBombs;
       document.getElementById("cuddleCoins").textContent = cuddleCoins;
@@ -271,7 +289,7 @@
     }
 
     setInterval(() => {
-  const hugsFromHugGivers = kissGivers / 5;
+  const hugsFromHugGivers = hugGivers / 5;
   const hugsFromLoveLetters = loveLetters * 5;
   const hugsFromFactories = factories * 20;
   const hugsFromBombs = charmBombs * 50;
@@ -285,7 +303,7 @@
   checkUnlocks();
   updateDisplay();
   checkWinCondition();
-  document.getElementById("hps").textContent = totalHPS.toFixed(1);
+  document.getElementById("hps").textContent = Math.floor(totalHPS);
 }, 1000);
   function toggleStats() {
   const panel = document.getElementById("statsPanel");
