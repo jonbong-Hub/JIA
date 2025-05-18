@@ -72,8 +72,8 @@
 
   <h2>💅 Upgrades with Attitude 💅</h2>
 <div id="tier1">
-  <button onclick="buyKissGiver()" title="Automated smooches, 100% Jon certified">Hire Kiss Giver 💋 (10 Hugs)</button>
-  <p>Kiss Givers: <span id="kissGivers">0</span></p>
+  <button onclick="buyKissGiver()" title="Automated smooches, 100% Jon certified">Hire Hug Giver 🤝 (10 Hugs)</button>
+  <p>Hug Givers: <span id="kissGivers">0</span></p>
 
   <button onclick="buyLoveLetter()" title="Sealed with sass and glitter">Send Flirty Love Letter 💌 (50 Hugs)</button>
   <p>Love Letters: <span id="loveLetters">0</span></p>
@@ -140,9 +140,11 @@
     // --- Upgrade Purchase Functions ---
 
     function buyKissGiver() {
+      console.log("Attempting to hire Hug Giver with", hugs, "hugs");
       if (hugs >= 10) {
         hugs -= 10;
         kissGivers++;
+        console.log("Success: You now have", kissGivers, "Hug Givers");
         updateDisplay();
       }
     }
